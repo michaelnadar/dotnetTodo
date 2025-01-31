@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/sourav/Backend/Backend.csproj": {}
+    "/home/micheal/dotnetTodo/Backend.csproj": {}
   },
   "projects": {
-    "/home/sourav/Backend/Backend.csproj": {
+    "/home/micheal/dotnetTodo/Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/sourav/Backend/Backend.csproj",
+        "projectUniqueName": "/home/micheal/dotnetTodo/Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "/home/sourav/Backend/Backend.csproj",
-        "packagesPath": "/home/sourav/.nuget/packages/",
-        "outputPath": "/home/sourav/Backend/obj/",
+        "projectPath": "/home/micheal/dotnetTodo/Backend.csproj",
+        "packagesPath": "/home/micheal/.nuget/packages/",
+        "outputPath": "/home/micheal/dotnetTodo/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/sourav/.nuget/NuGet/NuGet.Config"
+          "/home/micheal/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net7.0"

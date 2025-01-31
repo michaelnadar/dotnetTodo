@@ -17,7 +17,7 @@ public DataContext(DbContextOptions<DataContext> options): base(options)
 protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 {
     base.OnConfiguring(optionsBuilder);
-    optionsBuilder.UseMySql("Server=localhost;Database=test;User=root;Password=root;",
+    optionsBuilder.UseMySql("Server=localhost;Database=test;User=root;Password=micheal@1;",
                 new MySqlServerVersion(new Version(10, 5, 0)) );
 }
 

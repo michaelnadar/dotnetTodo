@@ -19,7 +19,7 @@ namespace Backend.Services.TodoService
             httpContextAccessor = _httpContextAccessor;
         }
 
-        public async Task<List<ToDoList?>> CreateTodo(ToDoListDto request)
+        public async Task<List<ToDoList>> CreateTodo(ToDoListDto request)
         {
             request.UserID = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
               var user = await context.Users.FindAsync(request.UserID);
@@ -39,7 +39,9 @@ namespace Backend.Services.TodoService
             {
              context.ToDoLists.Add(newToDo);
             await context.SaveChangesAsync();
-            return await context.ToDoLists.ToListAsync();
+            return await context.ToDoLists
+            .Where(t=>t.UserID == request.UserID)
+            .ToListAsync();
                 
             }
             catch (System.Exception)
@@ -71,12 +73,12 @@ namespace Backend.Services.TodoService
 
 
           public async Task<List<ToDoList>?> update(ToDoListDto request,int id){
-             var userId = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+             var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
          var existingToDo = context.ToDoLists.Find(id);
             if(existingToDo is null){
                 return null;
             }
-            if(existingToDo.UserID != int.Parse(userId)){
+            if(existingToDo.UserID != userId){
                      return null;
             }
             existingToDo.Message = request.Message;
@@ -85,7 +87,9 @@ namespace Backend.Services.TodoService
             try
             {
             await context.SaveChangesAsync();
-            return await context.ToDoLists.ToListAsync();
+            return await context.ToDoLists
+            .Where(t => t.UserID == userId)
+            .ToListAsync();
                 
             }
             catch (System.Exception)
@@ -97,10 +101,10 @@ namespace Backend.Services.TodoService
 
 
      public  async Task<List<ToDoList>?> deleteSingle(int id){
-         var userId = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+         var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
          Console.WriteLine($"Retrieved UserId: {userId}");
         var toDoItem = await context.ToDoLists
-        .Where(t => t.Id == id && t.UserID == int.Parse(userId))
+        .Where(t => t.Id == id && t.UserID == userId)
         .FirstOrDefaultAsync();
 
         if (toDoItem == null)
@@ -112,7 +116,9 @@ namespace Backend.Services.TodoService
                 
                     context.ToDoLists.Remove(toDoItem);
                         await context.SaveChangesAsync();
-                    return await context.ToDoLists.ToListAsync();
+                    return await context.ToDoLists
+                    .Where(t => t.UserID == userId)
+                    .ToListAsync();
             }
             catch (System.Exception)
             {

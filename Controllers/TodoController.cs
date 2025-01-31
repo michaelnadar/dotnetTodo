@@ -21,7 +21,6 @@ namespace Backend.Controllers
         [HttpPost]
         public async Task<ActionResult<ToDoList>> post(ToDoListDto request)
         {
-            Console.WriteLine(request);
             var hello = await todoService.CreateTodo(request);
             return Ok(hello);
 
@@ -32,9 +31,9 @@ namespace Backend.Controllers
     public async Task<ActionResult<List<ToDoList>>> GetToDoListsByUserId()
     {
        var todo = await todoService.GetToDoListsByUserId();
-       if(todo is null){
-        return NotFound("Not Found");
-       }
+    //    if(todo is null){
+    //     return NotFound("Not Found");
+    //    }
        return Ok(todo);
     }
 
