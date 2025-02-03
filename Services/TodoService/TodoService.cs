@@ -21,12 +21,8 @@ namespace Backend.Services.TodoService
 
         public async Task<List<ToDoList>> CreateTodo(ToDoListDto request)
         {
-            request.UserID = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-              var user = await context.Users.FindAsync(request.UserID);
-                if (user == null)
-                {
-                    return null;
-                }
+            request.UserID = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+           
                 
                 var newToDo = new ToDoList
                 {
@@ -35,28 +31,18 @@ namespace Backend.Services.TodoService
                     Priority = request.Priority,
                     Category = request.Category
                 };
-             try
-            {
+            
              context.ToDoLists.Add(newToDo);
             await context.SaveChangesAsync();
             return await context.ToDoLists
             .Where(t=>t.UserID == request.UserID)
             .ToListAsync();
-                
-            }
-            catch (System.Exception)
-            {
-               return null;
-            }
+            
         }
 
          public async Task<List<ToDoList>?> GetToDoListsByUserId(){
-            int userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-         var userExists = await context.Users.AnyAsync(u => u.Id == userId);
-        if (!userExists)
-        {
-            return null;
-        }
+            int userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
+        
 
         var toDoLists = await context.ToDoLists
             .Where(t => t.UserID == userId)
@@ -64,7 +50,7 @@ namespace Backend.Services.TodoService
 
         if (toDoLists == null || toDoLists.Count == 0)
         {
-            return null;
+            return new List<ToDoList>();
         }
 
         return toDoLists;
@@ -73,35 +59,29 @@ namespace Backend.Services.TodoService
 
 
           public async Task<List<ToDoList>?> update(ToDoListDto request,int id){
-             var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+             var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
          var existingToDo = context.ToDoLists.Find(id);
             if(existingToDo is null){
                 return null;
             }
+            
             if(existingToDo.UserID != userId){
                      return null;
             }
             existingToDo.Message = request.Message;
             existingToDo.Priority = request.Priority;
             existingToDo.Category = request.Category;
-            try
-            {
+           
             await context.SaveChangesAsync();
             return await context.ToDoLists
             .Where(t => t.UserID == userId)
             .ToListAsync();
-                
-            }
-            catch (System.Exception)
-            {
-               return null;
-            }
     }
 
 
 
      public  async Task<List<ToDoList>?> deleteSingle(int id){
-         var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+         var userId = int.Parse(httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
          Console.WriteLine($"Retrieved UserId: {userId}");
         var toDoItem = await context.ToDoLists
         .Where(t => t.Id == id && t.UserID == userId)
@@ -111,24 +91,17 @@ namespace Backend.Services.TodoService
         {
             return null;
         }
-            try
-            {
-                
-                    context.ToDoLists.Remove(toDoItem);
-                        await context.SaveChangesAsync();
-                    return await context.ToDoLists
-                    .Where(t => t.UserID == userId)
-                    .ToListAsync();
-            }
-            catch (System.Exception)
-            {
-                
-                     return null;
-            }
+           
+        context.ToDoLists.Remove(toDoItem);
+            await context.SaveChangesAsync();
+        return await context.ToDoLists
+        .Where(t => t.UserID == userId)
+        .ToListAsync();
+           
     }
 
-     public  async Task<string> deleteAllByUser(int userId){
-         var currentUser = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+     public  async Task<string?> deleteAllByUser(int userId){
+         var currentUser = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
         if(int.Parse(currentUser) != userId){
             return "You dont have access";
         }

@@ -7,7 +7,7 @@ namespace Backend.Services.TodoService
 {
     public interface ITodoService{
 
-        Task<List<ToDoList?>> CreateTodo(ToDoListDto request);
+        Task<List<ToDoList>> CreateTodo(ToDoListDto request);
 
         Task<List<ToDoList>?> GetToDoListsByUserId();
 

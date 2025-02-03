@@ -19,10 +19,14 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToDoList>> post(ToDoListDto request)
+        public async Task<ActionResult<ToDoList>> Create(ToDoListDto request)
         {
-            var hello = await todoService.CreateTodo(request);
-            return Ok(hello);
+            try{
+            var data = await todoService.CreateTodo(request); 
+            return Ok(data);
+            }catch(Exception ex){
+                    return StatusCode(StatusCodes.Status500InternalServerError,"500 Server Err");
+            }
 
         }
 
@@ -30,39 +34,56 @@ namespace Backend.Controllers
     [HttpGet("todolists")]
     public async Task<ActionResult<List<ToDoList>>> GetToDoListsByUserId()
     {
+       try
+       {  
        var todo = await todoService.GetToDoListsByUserId();
-    //    if(todo is null){
-    //     return NotFound("Not Found");
-    //    }
        return Ok(todo);
+       }
+       catch (Exception ex)
+       {
+            return StatusCode(StatusCodes.Status500InternalServerError,"500 Server Err");
+       }
     }
 
      [HttpPut("{id}")]
-        public async  Task<ActionResult<ToDoList>> update(ToDoListDto request,int id)
+        public async  Task<ActionResult<ToDoList>> Update(ToDoListDto request,int id)
         {   
-          var hello = await todoService.update(request,id);
-           if (hello is null ){
-            return NotFound("not found");
-           }
-           return Ok(hello);
+            try
+            {
+                var todo = await todoService.update(request,id);
+                if (todo is null ){
+                    return NotFound("not found");
+                }
+                return Ok(todo);
+            }
+            catch (Exception ex)
+            {
+                 return StatusCode(StatusCodes.Status500InternalServerError,"500 Server Err");
+            }
 
         }
 
 
           [HttpDelete("delete/{id}")]
-        public async  Task<ActionResult<ToDoList>> deleteSingle(int id)
+        public async  Task<ActionResult<ToDoList>> DeleteSingle(int id)
         {   
-            var hello =await todoService.deleteSingle(id);
-
-            if(hello is null)
+            try
+            {
+            var delete =await todoService.deleteSingle(id);
+            if(delete is null)
                 return NotFound("not found");
-
-            return Ok(hello);
+            return Ok(delete);
+                
+            }
+            catch (Exception ex)
+            {
+                 return StatusCode(StatusCodes.Status500InternalServerError,"500 Server Err");
+            }
 
         }
 
           [HttpDelete("user/{userId}")]
-        public async  Task<ActionResult<string>> deleteAllByUser(int userId)
+        public async  Task<ActionResult<string>> DeleteAllByUser(int userId)
         {   
             var hello =await todoService.deleteAllByUser(userId);
 
